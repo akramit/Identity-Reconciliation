@@ -1,5 +1,7 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 import dao
+import services
+
 
 app = Flask(__name__)
 
@@ -7,10 +9,21 @@ app = Flask(__name__)
 def hello_world():
     return "<p>Hello, World!</p>"
 
-@app.route("/identify")
+@app.route("/identify",methods=['POST'])
 def identify():
-      return dao.get_all()
-      #return "<p> Under Identify<br> </p>"
+    try:
+        data = request.json
+        if 'email' in data and 'phoneNumber' in data :
+            email = data['email']
+            phoneNumber = data['phoneNumber']
+            componentId=services.identify_operations(email,phoneNumber)
+            output = services.generate_output_from_DB(componentId)
+            return output,200
+        else :
+            return jsonify({'error':'Invalid JSON data. Missing Parameters'}),400
+    
+    except Exception as e:
+         return jsonify({'error':str(e)}),500
 
 
 if __name__ == '__main__':
