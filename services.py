@@ -20,7 +20,7 @@ def generate_output_from_DB(componentId):
     
 
 def identify_operations(email,phoneNumber):
-    plinkId,component_with_phone = dao.get_component_with_phone(phoneNumber) # componentId
+    plinkId,component_with_phone = dao.get_component_with_phone(phoneNumber)
     elinkId,component_with_email = dao.get_component_with_email(email)
     componentId = None
     if component_with_phone is None and component_with_email is None:
@@ -50,11 +50,11 @@ def identify_operations(email,phoneNumber):
         assert id is not None
         dao.create_new_component(id,component_with_phone)
         componentId = component_with_phone
-    elif component_with_phone != component_with_email: # 1,2 : [primary of 1, primary of 2]
+    elif component_with_phone != component_with_email: 
         # Merge or update components
-        id_and_createdAt = dao.get_id_and_createdAt(component_with_phone,component_with_email) # 2 rows with id and created
-        primary_id = sorted(id_and_createdAt, key=lambda x:x[1])[0][0]  # primary
-        secondary_id = sorted(id_and_createdAt, key=lambda x:x[1])[1][0] # 
+        id_and_createdAt = dao.get_id_and_createdAt(component_with_phone,component_with_email) 
+        primary_id = sorted(id_and_createdAt, key=lambda x:x[1])[0][0]  
+        secondary_id = sorted(id_and_createdAt, key=lambda x:x[1])[1][0] 
         dao.update_contact_precedence(primary_id,secondary_id)
         dao.update_component(primary_id,secondary_id)
         componentId = primary_id
