@@ -7,30 +7,32 @@ dbconfig = {
     'password':'amit',
     'database':'identity_db',
 }
-#data_to_insert = ("John Doe", "john@example.com")
-
-# SQL query to insert data into the table with an auto-incrementing ID
-#insert_query = "INSERT INTO customers (customer_name, customer_email) VALUES (%s, %s)"
 
 
-def get_all():
-    output = ''
-    with UseDatabase(dbconfig) as cursor:
-        _sql = """select * from Contact"""
-        cursor.execute(_sql)
-        for row in cursor.fetchall():
-            output += str(row)+"<br>"
-    return output
-
-def get_all_linked_contacts(email,phoneNumber):
-    _sql = """ SELECT * FROM Contact WHERE email=%s OR phoneNumber=%s"""
-    values =(email,phoneNumber)
+def get_component_with_phone(phoneNumber):
+    _sql = """SELECT Contact.id,Components.componentId FROM Contact INNER JOIN Components 
+                ON Components.id = Contact.id WHERE Contact.phoneNumber=%s"""
+    values =(phoneNumber,)
+    id,componentId = None,None
     output = None
     with UseDatabase(dbconfig) as cursor:
         cursor.execute(_sql,values)
-        output = cursor.fetchall()
-    return output
+        output=cursor.fetchall()
+        if len(output) > 0 :
+            id,componentId = output[0]
+    return (id,componentId)
 
+def get_component_with_email(email):
+    _sql = """SELECT Contact.id,Components.componentId FROM Contact INNER JOIN Components 
+                ON Components.id = Contact.id WHERE Contact.email=%s"""
+    values =(email,)
+    id,componentId = None,None
+    with UseDatabase(dbconfig) as cursor:
+        cursor.execute(_sql,values)
+        output=cursor.fetchall()
+        if len(output) > 0 :
+            id,componentId = output[0]
+    return (id,componentId)
 
 def create_new_component(id, componentId):
     _sql = """INSERT INTO Components VALUES(%s,%s)"""
@@ -38,6 +40,14 @@ def create_new_component(id, componentId):
     with UseDatabase(dbconfig) as cursor:
         cursor.execute(_sql,values)
 
+def update_component(primary_id,secondary_id):
+    _sql = """ UPDATE Components SET componentId=%s WHERE componentId=%s"""
+    values = (primary_id,secondary_id)
+    updated_id = None
+    with UseDatabase(dbconfig) as cursor:
+        cursor.execute(_sql,values)
+        updated_id = cursor.lastrowid
+    return updated_id
 
 def create_new_contact(phoneNumber,email,linkPrecedence,linkedId=None) -> 'str':
     createdAt = datetime.now()
@@ -49,16 +59,15 @@ def create_new_contact(phoneNumber,email,linkPrecedence,linkedId=None) -> 'str':
     with UseDatabase(dbconfig) as cursor:
         cursor.execute(_sql,contact_values)
         inserted_id = cursor.lastrowid
-
     return inserted_id
 
-def update_contact_precedence(id,linkedId) -> 'str':
+def update_contact_precedence(primary_id,id) -> 'str':
     linkPrecedence = "secondary"
-    value = (linkPrecedence,linkedId,id)
+    values = (linkPrecedence,primary_id,id)
     _sql = """ UPDATE Contact SET linkPrecedence=%s, linkedId=%s, updatedAt=CURRENT_TIMESTAMP where id=%s"""
     updated_id = None
     with UseDatabase(dbconfig) as cursor:
-        cursor.execute(_sql)
+        cursor.execute(_sql,values)
         updated_id = cursor.lastrowid
     return updated_id
 
@@ -75,4 +84,12 @@ def get_contacts_of_a_component(componentId) -> 'dict':
     return output
 
 
-
+def get_id_and_createdAt(component_with_phone,component_with_email):
+    # 2 rows with id and created
+    _sql = """SELECT id,createdAt FROM Contact WHERE id in (%s,%s)"""
+    values = (component_with_phone,component_with_email)
+    output = None
+    with UseDatabase(dbconfig) as cursor:
+        cursor.execute(_sql,values)
+        output=cursor.fetchall()
+    return output
