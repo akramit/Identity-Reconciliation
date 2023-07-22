@@ -1,10 +1,17 @@
 from DBcm import UseDatabase
 from datetime import datetime
 
+# dbconfig = {
+#     'host':'localhost',
+#     'user':'amit',
+#     'password':'amit',
+#     'database':'identity_db',
+# }
 dbconfig = {
-    'host':'localhost',
-    'user':'amit',
-    'password':'amit',
+    'host':'db',
+    'port':'3306',
+    'user':'root',
+    'password':'root',
     'database':'identity_db',
 }
 
