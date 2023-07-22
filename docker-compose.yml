@@ -1,0 +1,20 @@
+version: '3.9'  # The version of the Docker Compose file syntax
+
+services:
+  app:  # Service for the Flask web application
+    container_name : identity_app
+    links:
+      - db
+    build : ./
+    ports:
+      - "5432:5432"
+
+  db:  # Service for the PostgreSQL database
+    #container_name : identity_db
+    image: mysql:latest
+    ports:
+      - "32001:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD : root
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
