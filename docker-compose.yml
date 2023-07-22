@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
 
-  db:  # Service for the PostgreSQL database
+  db:  # Service for the database
     #container_name : identity_db
     image: mysql:latest
     ports:
