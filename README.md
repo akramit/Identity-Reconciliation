@@ -12,22 +12,89 @@ Linking different orders made with different contact information to the same per
 ### Tests ###
 <b>SET UP </b>: Fire a <b>POST</b> request - ```0.0.0.0:5432/identify``` 
 #### Test 1 ####
- INPUT : ```{
-"email":"mcfly@hillvalley.edu","phoneNumber":"123456" }```
-<br>
-OUTPUT : <br>
+ INPUT : 
+ ```json 
+ { "email":"mcfly@hillvalley.edu","phoneNumber":"123456" }
+```
+
+OUTPUT : 
+```json
+{
+    "contact": {
+        "emails": [
+           "mcfly@hillvalley.edu"
+        ],
+        "phoneNumbers": [
+            "123456"
+        ],
+        "primaryContactId": 1
+    }
+}
+```
+
 RESULT : PASS
 
 #### Test 2 ####
- INPUT : ``` {
-"email":"lorraine@hillvalley.edu",
-"phoneNumber":"123456"
-}``` 
-<br>
-OUTPUT : <br>
+ INPUT : 
+ ```json
+ { "email":"lorraine@hillvalley.edu","phoneNumber":"123456"}
+``` 
+
+OUTPUT :
+```json
+{
+    "contact": {
+        "emails": [
+      
+            "mcfly@hillvalley.edu",
+            "lorraine@hillvalley.edu"
+        ],
+        "phoneNumbers": [
+            "123456"
+        ],
+        "primaryContactId": 1,
+        "secondaryContactId": [
+            2
+        ]
+    }
+}
+```
+
 RESULT : PASS
 
 #### Test 3 ####
-INPUT : ```{ "email":"null","phoneNumber":"123456"}``` <br>
-OUTPUT : <br>
+INPUT :
+```json 
+{ "email":"null","phoneNumber":"123456"}
+```
+OUTPUT :
+```json
+{
+    "contact": {
+        "emails": [
+            "mcfly@hillvalley.edu",
+            "lorraine@hillvalley.edu"
+        ],
+        "phoneNumbers": [
+            "123456"
+        ],
+        "primaryContactId": 1,
+        "secondaryContactId": [
+            2
+        ]
+    }
+}
+```
 RESULT : PASS
+
+#### Test 4 ####
+INPUT : 
+```json
+{ "eml":"null","phone":"123456"}
+```
+OUTPUT: 
+```json
+{"error": "Invalid JSON data. Missing Parameters"}
+```
+RESULT : PASS 
+
