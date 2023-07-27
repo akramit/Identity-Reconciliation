@@ -8,3 +8,31 @@ Linking different orders made with different contact information to the same per
 3. Execute ```docker-compose up -d```
 4. ```/identify``` endpoint is exposed at - ```0.0.0.0:5432/identify```
 5. Send a POST request with JSON body. 
+
+### Tests ###
+<b>SET UP </b>: Fire a <b>POST</b> request - ```0.0.0.0:5432/identify``` 
+#### Test 1 ####
+ INPUT : ```javascript {
+"email":"mcfly@hillvalley.edu","phoneNumber":"123456" }
+```
+<br>
+OUTPUT : <br>
+RESULT : PASS
+
+#### Test 2 ####
+ INPUT : ```json
+ {
+"email":"mcfly@hillvalley.edu",
+"phoneNumber":"123456"
+}
+``` <br>
+OUTPUT : <br>
+RESULT : PASS
+
+#### Test 3 ####
+ INPUT : ```json{
+"email":"mcfly@hillvalley.edu",
+"phoneNumber":"123456"
+}```
+OUTPUT : <br>
+RESULT : PASS
