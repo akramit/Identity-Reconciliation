@@ -7,7 +7,13 @@ Linking different orders made with different contact information to the same per
 2. Go to directory ```/Identity-Reconciliation```
 3. Execute ```docker-compose up -d```
 4. ```/identify``` endpoint is exposed at - ```0.0.0.0:5432/identify```
-5. Send a POST request with JSON body. 
+5. Send a POST request with JSON body. JSON Body has format
+   ```json
+   {
+   "email":"email",
+   "phoneNumber":"phone"
+   }
+   ```
 
 ### Tests ###
 <b>SET UP </b>: Fire a <b>POST</b> request - ```0.0.0.0:5432/identify``` 
